@@ -7,33 +7,27 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class FCFileReader {
+class FCFileReader
+{
+    private File file;
     private HashMap<String, ArrayList<String>> data;
     private String[] columnNames;
     private int rowCount;
 
-    private String fileName;
-    private File file;
+    FCFileReader(String fileName)
+    {
+        this.file = new File(fileName);
 
-    FCFileReader(String fileName) {
-        this.fileName = fileName;
-        this.file = new File(this.fileName);
-
-        this.rowCount = this.readFile();
+        this.readFile();
     }
 
     public String[] getColumnNames() {
         return this.columnNames;
     }
 
-    public HashMap<String, ArrayList<String>> getData() {
-        return this.data;
-    }
+    public int getRowCount() { return this.rowCount; }
 
-    public int getRowCount()
-    {
-        return this.rowCount;
-    }
+    public int getColumnCount() { return this.columnNames.length; }
 
     public String getDataByColumnAndRow(String column, int row)
     {
@@ -44,7 +38,7 @@ public class FCFileReader {
         }
     }
 
-    public void addToColumn(String column, String value)
+    private void addToColumn(String column, String value)
     {
         ArrayList<String> temp = this.data.containsKey(column) ? this.data.get(column) : new ArrayList<>();
 
@@ -52,10 +46,8 @@ public class FCFileReader {
         this.data.put(column, temp);
     }
 
-    private int readFile()
+    private void readFile()
     {
-        int rowCounter = 0;
-
         try {
             this.data = new HashMap<>();
             this.columnNames = null;
@@ -64,20 +56,25 @@ public class FCFileReader {
             BufferedReader br = new BufferedReader(fr);
             String[] lineData = null;
             String line;
+
             while (( line = br.readLine() ) != null) {
                 lineData = line.split(",");
-                this.columnNames = this.columnNames == null ? lineData : this.columnNames;
 
-                for (int i=0; i<lineData.length; i++) {
-                    this.addToColumn(this.columnNames[i], lineData[i]);
+                if (this.columnNames != null) {
+                    this.rowCount++;
+                    for (int i=0; i<lineData.length; i++) {
+                        this.addToColumn(this.columnNames[i], lineData[i]);
+                    }
                 }
 
-                rowCounter++;
+                this.columnNames = this.columnNames == null ? lineData : this.columnNames;
+
+                if (line.isEmpty()) {
+                    this.rowCount--;
+                }
             }
         } catch(IOException e) {
             System.out.println(e.getMessage());
         }
-
-        return rowCounter;
     }
 }
