@@ -1,6 +1,7 @@
 # Jetbrains
 .idea/
 target/
+*.csv
 
 # Compiled class file
 *.class
