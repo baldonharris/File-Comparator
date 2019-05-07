@@ -58,7 +58,7 @@ class FCFileReader
             String line;
 
             while (( line = br.readLine() ) != null) {
-                lineData = line.split(",");
+                lineData = line.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
 
                 if (this.columnNames != null) {
                     this.rowCount++;

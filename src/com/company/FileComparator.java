@@ -1,11 +1,12 @@
 package com.company;
 
-import java.io.*;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 class FileComparator
 {
-    private static FileWriter writer;
+    HTMLTableBuilder builder;
     private FCFileReader file1;
     private FCFileReader file2;
     private String[] columns;
@@ -15,27 +16,12 @@ class FileComparator
         this.file1 = fr1;
         this.file2 = fr2;
         this.columns = columns;
-
-        File resultFile = new File("test.csv");
-        writer = new FileWriter(resultFile);
-
-        resultFile.createNewFile();
-        printToFile(String.join(",", this.columns));
+        this.builder = new HTMLTableBuilder(columns);
     }
 
     FileComparator(FCFileReader fr1, FCFileReader fr2) throws IOException
     {
         this(fr1, fr2, fr1.getColumnNames());
-    }
-
-    private static void printToFile(String content) throws IOException
-    {
-        StringBuilder sb = new StringBuilder();
-
-        sb.append(content);
-        sb.append("\n");
-
-        writer.write(sb.toString());
     }
 
     public void compare() throws IOException
@@ -48,25 +34,26 @@ class FileComparator
             throw new UnsupportedOperationException("Column names does not match.");
         }
 
+        ArrayList<String> dataRow;
+        String columnValue1;
+        String columnValue2;
+        String key;
+
         for (int row=0; row<file1.getRowCount(); row++) {
-            StringBuilder sbb = new StringBuilder();
+            dataRow = new ArrayList<>();
 
             for (String column : this.columns) {
-                String columnValue1 = file1.getDataByColumnAndRow(column, row);
-                String columnValue2 = file2.getDataByColumnAndRow(column, row);
+                columnValue1 = file1.getDataByColumnAndRow(column, row);
+                columnValue2 = file2.getDataByColumnAndRow(column, row);
+                key = column + (columnValue1.equals(columnValue2) ? ":normal:" : ":highlight:");
 
-                if (!columnValue1.equals(columnValue2)) {
-                    sbb.append(columnValue1);
-                }
-
-                sbb.append(",");
+                dataRow.add(key + columnValue1);
             }
 
-            if (!sbb.toString().replace(",", "").isEmpty()) {
-                printToFile(sbb.toString());
-            }
+            this.builder.insertRow(dataRow);
+            dataRow = null;
         }
 
-        writer.close();
+        this.builder.generate().launch();
     }
 }
