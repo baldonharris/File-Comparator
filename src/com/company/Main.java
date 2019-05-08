@@ -9,8 +9,8 @@ public class Main
 {
     public static void main(String[] args)
     {
-        FileParser fr1 = new FileParser("C:\\Users\\Harris C. Baldon\\Downloads\\Mock\\MOCK_DATA30cols.csv");
-        FileParser fr2 = new FileParser("C:\\Users\\Harris C. Baldon\\Downloads\\Mock\\MOCK_DATA30cols1.csv");
+        FileParser fr1 = new FileParser("C:\\Users\\Harris C. Baldon\\Downloads\\Mock\\1500000.csv");
+        FileParser fr2 = new FileParser("C:\\Users\\Harris C. Baldon\\Downloads\\Mock\\1500000-1.csv");
 
         try {
             long startTime = System.nanoTime();
@@ -23,7 +23,8 @@ public class Main
             endTime = System.nanoTime();
             duration = (double)(endTime - startTime) / 1_000_000_000.0;
 
-            System.out.println("MAIN: Time elapsed: " + duration);
+            System.out.println("Processed: " + fr1.getRowCount() + " rows.");
+            System.out.println("Time elapsed: " + duration);
         } catch (IOException e) {
             e.getMessage();
         }

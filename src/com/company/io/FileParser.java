@@ -51,6 +51,7 @@ public class FileParser
     private void readFile()
     {
         try {
+            System.out.println("Attempting to read " + this.file.getName());
             this.data = new HashMap<>();
             this.columnNames = null;
 
@@ -74,5 +75,6 @@ public class FileParser
         } catch(IOException e) {
             System.out.println(e.getMessage());
         }
+        System.out.println("Reading of file success.\n\n");
     }
 }

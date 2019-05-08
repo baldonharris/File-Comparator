@@ -26,10 +26,12 @@ public class FileComparator
 
     public void compare() throws IOException
     {
+        System.out.println("Checking if number of columns matched.");
         if (file1.getColumnCount() != file2.getColumnCount()) {
             throw new UnsupportedOperationException("The number of columns does not match.");
         }
 
+        System.out.println("Checking if column names matched.");
         if (!Arrays.equals(file1.getColumnNames(), file2.getColumnNames())) {
             throw new UnsupportedOperationException("Column names does not match.");
         }
@@ -39,6 +41,7 @@ public class FileComparator
         String columnValue2;
         String key;
 
+        System.out.println("Comparing values per row and column.");
         for (int row=0; row<file1.getRowCount(); row++) {
             dataRow = new ArrayList<>();
 
@@ -53,6 +56,7 @@ public class FileComparator
             this.builder.insertRow(dataRow);
         }
 
+        System.out.println("\n\nDone.\nGenerating result.");
         this.builder.generate().launch();
     }
 }
