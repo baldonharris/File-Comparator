@@ -15,6 +15,7 @@ public class FileComparator
         this.file1 = fr1;
         this.file2 = fr2;
         this.columns = columns;
+        System.out.println("Preparing result file.");
         this.builder = new HTMLTableBuilder(columns);
     }
 
@@ -50,7 +51,7 @@ public class FileComparator
             this.builder.insertRow();
         }
 
-        System.out.println("\n\nDone.\nGenerating result.");
+        System.out.println("\n\nDone.\nFinalizing result file.");
         this.builder.generate().launch();
     }
 }
