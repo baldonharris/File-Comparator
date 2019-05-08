@@ -1,7 +1,6 @@
 package com.company.io;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class FileComparator
@@ -36,24 +35,19 @@ public class FileComparator
             throw new UnsupportedOperationException("Column names does not match.");
         }
 
-        ArrayList<String> dataRow;
         String columnValue1;
         String columnValue2;
-        String key;
 
         System.out.println("Comparing values per row and column.");
         for (int row=0; row<file1.getRowCount(); row++) {
-            dataRow = new ArrayList<>();
-
             for (String column : this.columns) {
                 columnValue1 = file1.getDataByColumnAndRow(column, row);
                 columnValue2 = file2.getDataByColumnAndRow(column, row);
-                key = column + (columnValue1.equals(columnValue2) ? ":normal:" : ":highlight:");
 
-                dataRow.add(key + columnValue1);
+                this.builder.insertColumn(columnValue1, !columnValue1.equals(columnValue2));
             }
 
-            this.builder.insertRow(dataRow);
+            this.builder.insertRow();
         }
 
         System.out.println("\n\nDone.\nGenerating result.");

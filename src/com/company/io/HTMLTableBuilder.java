@@ -3,12 +3,12 @@ package com.company.io;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class HTMLTableBuilder
 {
     private static FileWriter writer;
     private static String fileName = "result.html";
+    private StringBuilder row;
 
     public HTMLTableBuilder(String[] headers) throws IOException
     {
@@ -31,26 +31,29 @@ public class HTMLTableBuilder
         writer.write(sb.toString());
     }
 
-    public void insertRow(ArrayList<String> row) throws IOException
+    public void insertColumn(String column, boolean toHighlight)
     {
-        StringBuilder sb = new StringBuilder();
-
-        sb.append("<tr>");
-        for (String d : row) {
-            String[] columnIndicatorValue = d.split(":");
-
-            sb.append("<td");
-            if (columnIndicatorValue[1].equals("highlight")) {
-                sb.append(" style=\"background-color: yellow;\"");
-            }
-
-            sb.append(">");
-            sb.append(columnIndicatorValue[2]);
-            sb.append("</td>");
+        if (this.row == null) {
+            this.row = new StringBuilder();
+            this.row.append("<tr>");
         }
 
-        sb.append("</td></tr>");
-        writer.write(sb.toString());
+        this.row.append("<td");
+        if (toHighlight) {
+            this.row.append(" style=\"background-color: yellow;\"");
+        }
+
+        this.row.append(">");
+        this.row.append(column);
+        this.row.append("</td>");
+    }
+
+    public void insertRow() throws IOException
+    {
+        this.row.append("</tr>");
+        writer.write(this.row.toString());
+
+        this.row = null;
     }
 
     public HTMLTableBuilder generate() throws IOException
