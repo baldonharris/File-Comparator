@@ -1,4 +1,4 @@
-package com.company;
+package com.company.io;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -10,7 +10,7 @@ public class HTMLTableBuilder
     private static FileWriter writer;
     private static String fileName = "result.html";
 
-    HTMLTableBuilder(String[] headers) throws IOException
+    public HTMLTableBuilder(String[] headers) throws IOException
     {
         File resultFile = new File(fileName);
         writer = new FileWriter(resultFile);
@@ -55,10 +55,7 @@ public class HTMLTableBuilder
 
     public HTMLTableBuilder generate() throws IOException
     {
-        StringBuilder sb = new StringBuilder();
-
-        sb.append("</tbody></table></body></html>");
-        writer.write(sb.toString());
+        writer.write("</tbody></table></body></html>");
         writer.close();
 
         return this;

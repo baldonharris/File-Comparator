@@ -1,4 +1,4 @@
-package com.company;
+package com.company.io;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -7,23 +7,20 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-class FCFileReader
+public class FileParser
 {
     private File file;
     private HashMap<String, ArrayList<String>> data;
     private String[] columnNames;
     private int rowCount;
 
-    FCFileReader(String fileName)
+    public FileParser(String fileName)
     {
         this.file = new File(fileName);
-
         this.readFile();
     }
 
-    public String[] getColumnNames() {
-        return this.columnNames;
-    }
+    public String[] getColumnNames() { return this.columnNames; }
 
     public int getRowCount() { return this.rowCount; }
 
@@ -46,6 +43,11 @@ class FCFileReader
         this.data.put(column, temp);
     }
 
+    private String[] explodeString(String line)
+    {
+        return line.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
+    }
+
     private void readFile()
     {
         try {
@@ -54,23 +56,19 @@ class FCFileReader
 
             FileReader fr = new FileReader(this.file);
             BufferedReader br = new BufferedReader(fr);
-            String[] lineData = null;
+            String[] lineData;
             String line;
 
             while (( line = br.readLine() ) != null) {
-                lineData = line.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
+                lineData = explodeString(line);
 
-                if (this.columnNames != null) {
+                if (this.columnNames != null && !line.isEmpty()) {
                     this.rowCount++;
                     for (int i=0; i<lineData.length; i++) {
                         this.addToColumn(this.columnNames[i], lineData[i]);
                     }
-                }
-
-                this.columnNames = this.columnNames == null ? lineData : this.columnNames;
-
-                if (line.isEmpty()) {
-                    this.rowCount--;
+                } else {
+                    this.columnNames = lineData;
                 }
             }
         } catch(IOException e) {

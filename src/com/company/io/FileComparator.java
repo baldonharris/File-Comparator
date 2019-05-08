@@ -1,17 +1,17 @@
-package com.company;
+package com.company.io;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-class FileComparator
+public class FileComparator
 {
-    HTMLTableBuilder builder;
-    private FCFileReader file1;
-    private FCFileReader file2;
+    private HTMLTableBuilder builder;
+    private FileParser file1;
+    private FileParser file2;
     private String[] columns;
 
-    FileComparator(FCFileReader fr1, FCFileReader fr2, String[] columns) throws IOException
+    public FileComparator(FileParser fr1, FileParser fr2, String[] columns) throws IOException
     {
         this.file1 = fr1;
         this.file2 = fr2;
@@ -19,7 +19,7 @@ class FileComparator
         this.builder = new HTMLTableBuilder(columns);
     }
 
-    FileComparator(FCFileReader fr1, FCFileReader fr2) throws IOException
+    public FileComparator(FileParser fr1, FileParser fr2) throws IOException
     {
         this(fr1, fr2, fr1.getColumnNames());
     }
@@ -51,7 +51,6 @@ class FileComparator
             }
 
             this.builder.insertRow(dataRow);
-            dataRow = null;
         }
 
         this.builder.generate().launch();
