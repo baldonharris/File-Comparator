@@ -26,7 +26,7 @@ public class Main
             FileParser fr1 = new FileParser(fileName1);
             FileParser fr2 = new FileParser(fileName2);
 
-            FileComparator fc = new FileComparator(fr1, fr2, columnName.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)"));
+            FileComparator fc = new FileComparator(fr1, fr2, columnName.isEmpty() ? fr1.getColumnNames() : columnName.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)"));
             fc.compare().generate().launch();
 
             endTime = System.nanoTime();
@@ -36,7 +36,7 @@ public class Main
             System.out.println("Time elapsed: " + duration + "s");
         } catch (IOException|UnsupportedOperationException e) {
             System.out.println("\n\nAborting.");
-            System.out.println(e.getMessage());
+            System.out.println("Error: " + e.getMessage());
         }
     }
 }
