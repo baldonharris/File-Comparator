@@ -1,6 +1,7 @@
 package com.company.io;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
 public class FileComparator
@@ -15,7 +16,7 @@ public class FileComparator
         this.file1 = fr1;
         this.file2 = fr2;
         this.columns = columns;
-        System.out.println("Preparing result file.");
+        System.out.println("FileComparator: Preparing result file.");
         this.builder = new HTMLTableBuilder(columns);
     }
 
@@ -24,14 +25,25 @@ public class FileComparator
         this(fr1, fr2, fr1.getColumnNames());
     }
 
-    public void compare() throws IOException
+    public HTMLTableBuilder compare() throws IOException
     {
-        System.out.println("Checking if number of columns matched.");
+        System.out.println("FileComparator: Checking if columns to compare exists.");
+        for (String column : this.columns) {
+            if (!Arrays.asList(file1.getColumnNames()).contains(column)){
+                throw new UnsupportedEncodingException("Unknown column to compare.");
+            }
+
+            if (!Arrays.asList(file2.getColumnNames()).contains(column)){
+                throw new UnsupportedEncodingException("Unknown column to compare.");
+            }
+        }
+
+        System.out.println("FileComparator: Checking if number of columns matched.");
         if (file1.getColumnCount() != file2.getColumnCount()) {
             throw new UnsupportedOperationException("The number of columns does not match.");
         }
 
-        System.out.println("Checking if column names matched.");
+        System.out.println("FileComparator: Checking if column names matched.");
         if (!Arrays.equals(file1.getColumnNames(), file2.getColumnNames())) {
             throw new UnsupportedOperationException("Column names does not match.");
         }
@@ -39,7 +51,7 @@ public class FileComparator
         String columnValue1;
         String columnValue2;
 
-        System.out.println("Comparing values per row and column.");
+        System.out.println("FileComparator: Comparing values per row and column.");
         for (int row=0; row<file1.getRowCount(); row++) {
             for (String column : this.columns) {
                 columnValue1 = file1.getDataByColumnAndRow(column, row);
@@ -51,7 +63,9 @@ public class FileComparator
             this.builder.insertRow();
         }
 
-        System.out.println("\n\nDone.\nFinalizing result file.");
-        this.builder.generate().launch();
+        System.out.println("\n\nFileComparator: Done.");
+        System.out.println("FileComparator: Finalizing result file.");
+
+        return this.builder;
     }
 }

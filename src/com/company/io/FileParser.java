@@ -14,7 +14,7 @@ public class FileParser
     private String[] columnNames;
     private int rowCount;
 
-    public FileParser(String fileName)
+    public FileParser(String fileName) throws IOException
     {
         this.file = new File(fileName);
         this.readFile();
@@ -48,33 +48,30 @@ public class FileParser
         return line.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
     }
 
-    private void readFile()
+    private void readFile() throws IOException
     {
-        try {
-            System.out.println("Attempting to read " + this.file.getName());
-            this.data = new HashMap<>();
-            this.columnNames = null;
+        System.out.println("FileParser: Attempting to read " + this.file.getName());
+        this.data = new HashMap<>();
+        this.columnNames = null;
 
-            FileReader fr = new FileReader(this.file);
-            BufferedReader br = new BufferedReader(fr);
-            String[] lineData;
-            String line;
+        FileReader fr = new FileReader(this.file);
+        BufferedReader br = new BufferedReader(fr);
+        String[] lineData;
+        String line;
 
-            while (( line = br.readLine() ) != null) {
-                lineData = explodeString(line);
+        while (( line = br.readLine() ) != null) {
+            lineData = explodeString(line);
 
-                if (this.columnNames != null && !line.isEmpty()) {
-                    this.rowCount++;
-                    for (int i=0; i<lineData.length; i++) {
-                        this.addToColumn(this.columnNames[i], lineData[i]);
-                    }
-                } else {
-                    this.columnNames = lineData;
+            if (this.columnNames != null && !line.isEmpty()) {
+                this.rowCount++;
+                for (int i=0; i<lineData.length; i++) {
+                    this.addToColumn(this.columnNames[i], lineData[i]);
                 }
+            } else {
+                this.columnNames = lineData;
             }
-        } catch(IOException e) {
-            System.out.println(e.getMessage());
         }
-        System.out.println("Reading of file success.\n\n");
+
+        System.out.println("FileParser: Reading of file success.\n\n");
     }
 }
