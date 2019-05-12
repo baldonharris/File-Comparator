@@ -2,12 +2,9 @@ package com.company;
 
 import com.company.io.FileComparator;
 import com.company.io.FileParser;
-import javafx.scene.control.CheckBox;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JOptionPane;
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class Main
 {
