@@ -19,9 +19,6 @@ public class Main
             String fileName2 = JOptionPane.showInputDialog("Absolute path of File 2");
             String columnName = JOptionPane.showInputDialog("Columns to compare in comma separated format");
 
-            // C:\Users\Harris C. Baldon\Downloads\Mock\MOCK_DATA.csv
-            // C:\Users\Harris C. Baldon\Downloads\Mock\MOCK_DATA2.csv
-
             startTime = System.nanoTime();
             FileParser fr1 = new FileParser(fileName1);
             FileParser fr2 = new FileParser(fileName2);

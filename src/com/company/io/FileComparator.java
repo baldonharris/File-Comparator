@@ -1,5 +1,6 @@
 package com.company.io;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
@@ -25,6 +26,11 @@ public class FileComparator
         this(fr1, fr2, fr1.getColumnNames());
     }
 
+    private String[] explodeString(String line)
+    {
+        return line.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
+    }
+
     public HTMLTableBuilder compare() throws IOException
     {
         System.out.println("FileComparator: Checking if columns to compare exists.");
@@ -48,17 +54,31 @@ public class FileComparator
             throw new UnsupportedOperationException("Column names does not match.");
         }
 
-        String columnValue1;
-        String columnValue2;
-
         System.out.println("FileComparator: Comparing values per row and column.");
-        for (int row=0; row<file1.getRowCount(); row++) {
-            for (String column : this.columns) {
-                columnValue1 = file1.getDataByColumnAndRow(column, row);
-                columnValue2 = file2.getDataByColumnAndRow(column, row);
+        int columnNameIndex1;
+        int columnNameIndex2;
+        BufferedReader br1 = file1.getBufferedReader();
+        BufferedReader br2 = file2.getBufferedReader();
+        String line1, line2;
+        String[] lineData1, lineData2;
+        int rowCounter = 0;
 
-                this.builder.insertColumn(columnValue1, !columnValue1.equals(columnValue2));
+        while (( line1 = br1.readLine() ) != null && ( line2 = br2.readLine() ) != null) {
+            rowCounter++;
+
+            lineData1 = explodeString(line1);
+            lineData2 = explodeString(line2);
+
+            for (String column : this.columns) {
+                columnNameIndex1 = file1.getColumnIndex(column);
+                columnNameIndex2 = file2.getColumnIndex(column);
+
+                System.out.println(rowCounter + " " + lineData1[columnNameIndex1] + " " + lineData2[columnNameIndex2]);
+                this.builder.insertColumn(lineData1[columnNameIndex1], !lineData1[columnNameIndex1].equals(lineData2[columnNameIndex2]));
             }
+
+            file1.incrementRowCount();
+            file2.incrementRowCount();
 
             this.builder.insertRow();
         }
